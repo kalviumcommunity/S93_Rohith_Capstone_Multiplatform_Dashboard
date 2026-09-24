@@ -11,6 +11,7 @@ const platformSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
+      trim: true,
     },
 
     connected: {
