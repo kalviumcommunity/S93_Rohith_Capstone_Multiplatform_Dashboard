@@ -12,27 +12,28 @@ const contentSchema = new mongoose.Schema(
       type: String,
     },
 
-    platform: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Platform",
-      required: true,
-    },
-
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
+    platformId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Platform",
+      required: true,
+    },
+
     topic: {
       type: String,
       required: true,
+      trim: true,
     },
 
     format: {
       type: String,
-      enum: ["Short Video", "Long Video", "Image", "Carousel", "Post"],
       required: true,
+      enum: ["Short Video", "Long Video", "Image", "Carousel", "Post"],
     },
 
     publishedAt: {
@@ -43,26 +44,31 @@ const contentSchema = new mongoose.Schema(
     views: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     likes: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     comments: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     shares: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     engagementRate: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
   {
