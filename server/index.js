@@ -29,34 +29,66 @@ app.get("/api/health", (req, res) => {
 function registerCrudRoutes(path, Model) {
   const router = express.Router();
 
-  // READ all records
-  router.get("/", async (req, res, next) => {
-    try {
-      const records = await Model.find().sort({ createdAt: -1 });
-      res.json(records);
-    } catch (error) {
-      next(error);
+  // GET all users with optional search
+app.get("/api/users", async (req, res) => {
+  try {
+    const { name, email } = req.query;
+
+    const filter = {};
+
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
     }
-  });
 
-  // READ one record
-  router.get("/:id", async (req, res, next) => {
-    try {
-      if (!mongoose.isValidObjectId(req.params.id)) {
-        return res.status(400).json({ error: "Invalid record ID" });
-      }
-
-      const record = await Model.findById(req.params.id);
-
-      if (!record) {
-        return res.status(404).json({ error: "Record not found" });
-      }
-
-      res.json(record);
-    } catch (error) {
-      next(error);
+    if (email) {
+      filter.email = { $regex: email, $options: "i" };
     }
-  });
+
+    const users = await User.find(filter).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+    });
+  }
+});
+
+// GET a single user by ID
+app.get("/api/users/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+    });
+  }
+});
 
   // CREATE a record
   router.post("/", async (req, res, next) => {
