@@ -90,40 +90,38 @@ app.get("/api/users/:id", async (req, res) => {
   }
 });
 
-  // CREATE a record
-  router.post("/", async (req, res, next) => {
-    try {
-      const record = await Model.create(req.body);
-      res.status(201).json(record);
-    } catch (error) {
-      next(error);
+  // POST: Create a user
+app.post("/api/users", async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      data: user,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists",
+      });
     }
-  });
 
-  // UPDATE a record
-  router.put("/:id", async (req, res, next) => {
-    try {
-      if (!mongoose.isValidObjectId(req.params.id)) {
-        return res.status(400).json({ error: "Invalid record ID" });
-      }
-
-      const { _id, __v, createdAt, updatedAt, ...updates } = req.body;
-
-      const record = await Model.findByIdAndUpdate(
-        req.params.id,
-        updates,
-        { new: true, runValidators: true }
-      );
-
-      if (!record) {
-        return res.status(404).json({ error: "Record not found" });
-      }
-
-      res.json(record);
-    } catch (error) {
-      next(error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user data",
+        errors: error.message,
+      });
     }
-  });
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to create user",
+    });
+  }
+});
 
   // DELETE a record
   router.delete("/:id", async (req, res, next) => {
