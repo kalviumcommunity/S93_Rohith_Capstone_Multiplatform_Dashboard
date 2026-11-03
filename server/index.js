@@ -60,35 +60,8 @@ app.get("/api/users", async (req, res) => {
 });
 
 // GET a single user by ID
-app.get("/api/users/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
 
-    res.status(200).json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid user ID",
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch user",
-    });
-  }
-});
 
   // POST: Create a user
 app.post("/api/users", async (req, res) => {
@@ -176,6 +149,23 @@ app.put("/api/users/:id", async (req, res) => {
   }
 });
 
+  
+  // POST: Create a new record
+  router.post("/", async (req, res, next) => {
+    try {
+      const record = await Model.create(req.body);
+
+      res.status(201).json({
+        success: true,
+        message: "Record created successfully",
+        data: record,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
   // DELETE a record
   router.delete("/:id", async (req, res, next) => {
     try {
@@ -195,6 +185,8 @@ app.put("/api/users/:id", async (req, res) => {
     }
   });
 
+  
+
   app.use(`/api/${path}`, router);
 }
 
@@ -202,6 +194,51 @@ app.put("/api/users/:id", async (req, res) => {
 registerCrudRoutes("users", User);
 registerCrudRoutes("platforms", Platform);
 registerCrudRoutes("content", Content);
+
+// GET a user with their related platforms and content
+app.get("/api/users/:id/relationships", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const platforms = await Platform.find({
+      userId: user._id,
+    }).populate("userId", "name email");
+
+    const content = await Content.find({
+      userId: user._id,
+    })
+      .populate("userId", "name email")
+      .populate("platformId", "name username");
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user,
+        platforms,
+        content,
+      },
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch related records",
+    });
+  }
+});
 
 // Handle invalid routes
 app.use((req, res) => {
