@@ -15,9 +15,96 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const { OAuth2Client } = require("google-auth-library");
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
+
 app.use(cors());
 app.use(express.json());
 
+// Google authentication
+app.post("/api/auth/google", async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: "Google credential is required",
+      });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.sub || !payload.email || !payload.email_verified) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Google account",
+      });
+    }
+
+    const googleId = payload.sub;
+    const email = payload.email.toLowerCase();
+
+    let user = await User.findOne({
+      $or: [{ googleId }, { email }],
+    });
+
+    if (user) {
+      if (user.googleId && user.googleId !== googleId) {
+        return res.status(409).json({
+          success: false,
+          message: "This email is linked to another Google account",
+        });
+      }
+
+      user.googleId = googleId;
+      if (!user.profileImage && payload.picture) {
+        user.profileImage = payload.picture;
+      }
+      await user.save();
+    } else {
+      user = await User.create({
+        name: payload.name || email.split("@")[0],
+        email,
+        googleId,
+        profileImage: payload.picture,
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Google authentication successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {
+    console.error("Google authentication error:", error.message);
+
+    return res.status(401).json({
+      success: false,
+      message: "Google authentication failed",
+    });
+  }
+});
 
 // Register a new user
 app.post("/api/auth/register", async (req, res) => {
