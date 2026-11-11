@@ -238,3 +238,32 @@
   flex-wrap: wrap;
   gap: 16px;
 }
+
+
+.auth-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.auth-toolbar span {
+  color: #172033;
+  font-weight: 500;
+}
+
+.auth-toolbar button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.auth-toolbar button:hover {
+  background: #1d4ed8;
+}
