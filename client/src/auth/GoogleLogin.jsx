@@ -12,7 +12,7 @@ function GoogleLoginPage({ onLogin }) {
       setError("");
 
       const result = await fetch(
-        "http://localhost:5000/api/auth/google",
+        "https://s93rohithcapstonemultiplatformdashboard-41t65bhur-rohith-03c4.vercel.app/api/auth/google",
         {
           method: "POST",
           headers: {

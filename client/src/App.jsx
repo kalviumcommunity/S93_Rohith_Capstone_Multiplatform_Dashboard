@@ -15,7 +15,7 @@ function App() {
       return;
     }
 
-    fetch("http://localhost:5000/api/auth/me", {
+    fetch("https://s93rohithcapstonemultiplatformdashboard-41t65bhur-rohith-03c4.vercel.app/api/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
