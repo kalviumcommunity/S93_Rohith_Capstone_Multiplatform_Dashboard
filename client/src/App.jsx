@@ -44,22 +44,14 @@ function App() {
   };
 
   if (checkingAuth) {
-    return <p>Checking your session...</p>;
+    return <main className="checking-auth">Checking your session...</main>;
   }
 
   if (!user) {
     return <GoogleLoginPage onLogin={setUser} />;
   }
 
-  return (
-    <>
-      <div className="auth-toolbar">
-        <span>Welcome, {user.name}</span>
-        <button onClick={handleLogout}>Sign Out</button>
-      </div>
-      <Dashboard />
-    </>
-  );
+  return <Dashboard user={user} onLogout={handleLogout} />;
 }
 
 export default App;

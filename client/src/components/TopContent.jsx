@@ -11,62 +11,44 @@ function TopContent() {
   const [editingUser, setEditingUser] = useState(null)
   const [saving, setSaving] = useState(false)
 
-  // async function loadUsers() {
-  //   try {
-  //     setError('')
-  //     const response = await fetch(API_URL)
-  //     const result = await response.json()
-
-  //     if (!response.ok) {
-  //       throw new Error(result.message || 'Could not load users')
-  //     }
-
-  //     setUsers(result.data || [])
-  //   } catch (err) {
-  //     setError(err.message || 'Could not connect to the server')
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
   useEffect(() => {
-  let cancelled = false
+    let cancelled = false
 
-  async function fetchUsers() {
-  try {
-    setError('');
+    async function fetchUsers() {
+      try {
+        setError('');
 
-    const response = await fetch(API_URL);
-    const result = await response.json();
+        const response = await fetch(API_URL);
+        const result = await response.json();
 
-    if (!response.ok) {
-      throw new Error(result.message || 'Could not load users');
+        if (!response.ok) {
+          throw new Error(result.message || 'Could not load users');
+        }
+
+        if (!cancelled) {
+          const userList = Array.isArray(result.data)
+            ? result.data
+            : [];
+
+          setUsers(userList);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message || 'Could not connect to the server');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
     }
 
-    if (!cancelled) {
-      const userList = Array.isArray(result.data)
-        ? result.data
-        : [];
+    fetchUsers()
 
-      setUsers(userList);
+    return () => {
+      cancelled = true
     }
-  } catch (err) {
-    if (!cancelled) {
-      setError(err.message || 'Could not connect to the server');
-    }
-  } finally {
-    if (!cancelled) {
-      setLoading(false);
-    }
-  }
-}
-
-  fetchUsers()
-
-  return () => {
-    cancelled = true
-  }
-}, [])
+  }, [])
 
   async function saveUser(event) {
     event.preventDefault()
@@ -139,38 +121,56 @@ function TopContent() {
   }
 
   return (
-    <section style={{ padding: '24px' }}>
-      <h2>User Management</h2>
-      <p>Edit a user's details or delete a user from the database.</p>
+    <section className="dashboard-panel accounts-section" id="accounts">
+      <div className="panel-heading">
+        <div>
+          <h2>Account directory</h2>
+          <p>Manage the people in your workspace.</p>
+        </div>
+        {!loading && (
+          <span className="account-count">
+            {users.length} {users.length === 1 ? 'account' : 'accounts'}
+          </span>
+        )}
+      </div>
 
       {error && (
-        <p role="alert" style={{ color: 'crimson' }}>
+        <p className="inline-alert" role="alert">
           {error}
         </p>
       )}
 
       {loading ? (
-        <p>Loading users...</p>
+        <p className="empty-state">Loading accounts...</p>
       ) : users.length === 0 ? (
-        <p>No users found. Create a user through your API first.</p>
+        <p className="empty-state">No accounts to show yet.</p>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="account-table-wrap">
+          <table className="account-table">
             <thead>
               <tr>
-                <th style={{ textAlign: 'left', padding: '10px' }}>Name</th>
-                <th style={{ textAlign: 'left', padding: '10px' }}>Email</th>
-                <th style={{ textAlign: 'left', padding: '10px' }}>Actions</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {users.map((user) => (
                 <tr key={user._id}>
-                  <td style={{ padding: '10px' }}>{user.name}</td>
-                  <td style={{ padding: '10px' }}>{user.email}</td>
-                  <td style={{ padding: '10px' }}>
+                  <td>
+                    <span className="account-name">
+                      <span className="account-initial" aria-hidden="true">
+                        {(user.name || user.email || '?')[0].toUpperCase()}
+                      </span>
+                      {user.name}
+                    </span>
+                  </td>
+                  <td>{user.email}</td>
+                  <td>
+                    <div className="table-actions">
                     <button
+                      className="table-action"
                       type="button"
                       onClick={() =>
                         setEditingUser({
@@ -184,11 +184,13 @@ function TopContent() {
                     </button>{' '}
 
                     <button
+                      className="table-action danger"
                       type="button"
                       onClick={() => deleteUser(user)}
                     >
                       Delete
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -200,14 +202,9 @@ function TopContent() {
       {editingUser && (
         <form
           onSubmit={saveUser}
-          style={{
-            marginTop: '24px',
-            display: 'grid',
-            gap: '12px',
-            maxWidth: '400px',
-          }}
+          className="edit-user-form"
         >
-          <h3>Edit User</h3>
+          <h3>Edit account</h3>
 
           <label>
             Name
@@ -220,7 +217,6 @@ function TopContent() {
                   name: event.target.value,
                 })
               }
-              style={{ display: 'block', width: '100%', padding: '8px' }}
             />
           </label>
 
@@ -236,11 +232,10 @@ function TopContent() {
                   email: event.target.value,
                 })
               }
-              style={{ display: 'block', width: '100%', padding: '8px' }}
             />
           </label>
 
-          <div>
+          <div className="form-actions">
             <button type="submit" disabled={saving}>
               {saving ? 'Saving...' : 'Save Changes'}
             </button>{' '}
