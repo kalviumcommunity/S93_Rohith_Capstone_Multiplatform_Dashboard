@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from 'react'
+import { API_URL as SERVER_URL } from '../config/api'
 
-const API_URL = 'http://localhost:5000/api/users'
+const API_URL = `${SERVER_URL}/api/users`
 
 function TopContent() {
   const [users, setUsers] = useState([])

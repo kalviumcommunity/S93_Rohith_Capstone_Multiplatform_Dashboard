@@ -2,20 +2,22 @@
 import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import GoogleLoginPage from "./auth/GoogleLogin";
+import { API_URL } from "./config/api";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(
+    () => Boolean(localStorage.getItem("authToken"))
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      setCheckingAuth(false);
       return;
     }
 
-    fetch("https://s93rohithcapstonemultiplatformdashboard-41t65bhur-rohith-03c4.vercel.app/api/auth/me", {
+    fetch(`${API_URL}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
