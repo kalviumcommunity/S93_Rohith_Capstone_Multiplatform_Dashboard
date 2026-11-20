@@ -1,39 +1,331 @@
-
 .google-login-page {
+  display: grid;
   min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) minmax(440px, 0.88fr);
+  overflow: hidden;
+  background: #fff;
+}
+
+.login-showcase {
+  position: relative;
   display: flex;
-  justify-content: center;
+  min-height: 100vh;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 38px clamp(32px, 7vw, 100px) 28px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 82% 78%, rgba(147, 121, 255, 0.28), transparent 34%),
+    radial-gradient(ellipse at 4% 5%, rgba(116, 87, 225, 0.28), transparent 40%),
+    #20213b;
+}
+
+.login-brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
   align-items: center;
-  background: #f1f5f9;
-  font-family: Arial, sans-serif;
+  gap: 10px;
+  width: fit-content;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  text-decoration: none;
+}
+
+.login-brand-mark {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #aa9bff, #7659e8);
+  box-shadow: 0 6px 16px rgba(104, 79, 212, 0.4);
+  font-size: 17px;
+}
+
+.login-showcase-copy {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  margin: auto 0;
+  padding: 70px 0;
+}
+
+.login-kicker {
+  margin: 0 0 17px;
+  color: #b6aaff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+.login-showcase-copy h1 {
+  max-width: 470px;
+  margin: 0;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 800;
+  letter-spacing: -2.7px;
+  line-height: 1.08;
+}
+
+.login-showcase-copy > p:not(.login-kicker) {
+  max-width: 405px;
+  margin: 19px 0 0;
+  color: #b2b4c8;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.login-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 37px;
+}
+
+.login-feature-mark {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  border: 1px solid rgba(202, 193, 255, 0.18);
+  border-radius: 12px;
+  color: #c9c0ff;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 18px;
+}
+
+.login-feature span:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.login-feature strong {
+  color: #f3f2ff;
+  font-size: 12px;
+}
+
+.login-feature small {
+  color: #a4a7bc;
+  font-size: 10px;
+}
+
+.login-decoration {
+  position: absolute;
+  right: -80px;
+  bottom: -180px;
+  width: 390px;
+  height: 390px;
+  opacity: 0.7;
+}
+
+.decoration-orbit {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(177, 164, 255, 0.17);
+  border-radius: 50%;
+}
+
+.orbit-two {
+  inset: 42px;
+}
+
+.orbit-three {
+  inset: 84px;
+}
+
+.decoration-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 74px;
+  height: 74px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  color: #e7e2ff;
+  background: linear-gradient(145deg, rgba(151, 129, 248, 0.7), rgba(101, 77, 204, 0.62));
+  box-shadow: 0 15px 40px rgba(14, 14, 34, 0.25);
+  font-family: 'Manrope', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  transform: translate(-50%, -50%) rotate(-12deg);
+}
+
+.login-footer {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #85879e;
+  font-size: 10px;
+}
+
+.login-main {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 36px;
+  background:
+    radial-gradient(ellipse at 100% 0%, #f5f2ff 0, transparent 33%),
+    #fff;
 }
 
 .google-login-card {
-  width: 350px;
-  max-width: calc(100% - 48px);
-  padding: 40px 24px;
-  background: white;
-  border-radius: 14px;
+  width: min(100%, 390px);
+  padding: 28px 20px;
   text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-.google-login-card h1 {
-  color: #172033;
-  margin-bottom: 10px;
+.login-card-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 21px;
+  place-items: center;
+  border-radius: 14px;
+  color: #7457e2;
+  background: #f1edff;
+  font-size: 18px;
 }
 
-.google-login-card p {
-  color: #64748b;
+.login-card-kicker {
+  margin: 0 0 7px;
+  color: #8d78e4;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.google-login-card h2 {
+  margin: 0;
+  color: #292c43;
+  font-family: 'Manrope', sans-serif;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.login-card-copy {
+  margin: 9px auto 0;
+  color: #8b8fa2;
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 .google-button {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 29px;
+}
+
+.login-progress,
+.login-error {
+  margin: 15px 0 0;
+  font-size: 11px;
+}
+
+.login-progress {
+  color: #767b90;
 }
 
 .login-error {
-  color: #dc2626 !important;
-  margin-top: 20px;
+  padding: 10px 12px;
+  border: 1px solid #ffdede;
+  border-radius: 8px;
+  color: #c13d4c;
+  background: #fff7f7;
+}
+
+.login-privacy {
+  margin-top: 27px;
+  color: #a1a4b3;
+  font-size: 10px;
+}
+
+@media (max-width: 850px) {
+  .google-login-page {
+    grid-template-columns: minmax(0, 0.9fr) minmax(380px, 1.1fr);
+  }
+
+  .login-showcase {
+    padding-right: 38px;
+    padding-left: 38px;
+  }
+
+  .login-showcase-copy h1 {
+    font-size: 43px;
+  }
+}
+
+@media (max-width: 640px) {
+  .google-login-page {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .login-showcase {
+    min-height: auto;
+    padding: 23px 24px 24px;
+  }
+
+  .login-brand {
+    font-size: 17px;
+  }
+
+  .login-brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .login-showcase-copy {
+    padding: 42px 0 32px;
+  }
+
+  .login-kicker {
+    margin-bottom: 10px;
+    font-size: 9px;
+  }
+
+  .login-showcase-copy h1 {
+    max-width: 420px;
+    font-size: clamp(35px, 10vw, 48px);
+    letter-spacing: -1.9px;
+  }
+
+  .login-showcase-copy > p:not(.login-kicker) {
+    max-width: 380px;
+    margin-top: 12px;
+    font-size: 12px;
+  }
+
+  .login-feature {
+    margin-top: 20px;
+  }
+
+  .login-decoration {
+    right: -190px;
+    bottom: -220px;
+  }
+
+  .login-footer {
+    font-size: 9px;
+  }
+
+  .login-main {
+    min-height: 400px;
+    flex: 1;
+    padding: 20px 20px 30px;
+  }
+
+  .google-login-card {
+    padding: 16px 0;
+  }
 }

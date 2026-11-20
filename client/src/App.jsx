@@ -2,20 +2,22 @@
 import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import GoogleLoginPage from "./auth/GoogleLogin";
+import { API_URL } from "./config/api";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(
+    () => Boolean(localStorage.getItem("authToken"))
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      setCheckingAuth(false);
       return;
     }
 
-    fetch("http://localhost:5000/api/auth/me", {
+    fetch(`${API_URL}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,22 +44,14 @@ function App() {
   };
 
   if (checkingAuth) {
-    return <p>Checking your session...</p>;
+    return <main className="checking-auth">Checking your session...</main>;
   }
 
   if (!user) {
     return <GoogleLoginPage onLogin={setUser} />;
   }
 
-  return (
-    <>
-      <div className="auth-toolbar">
-        <span>Welcome, {user.name}</span>
-        <button onClick={handleLogout}>Sign Out</button>
-      </div>
-      <Dashboard />
-    </>
-  );
+  return <Dashboard user={user} onLogout={handleLogout} />;
 }
 
 export default App;
